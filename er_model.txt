@@ -186,3 +186,4 @@ BUSINESS RULES ENFORCED BY CARDINALITY:
 - Boarding station must come before alighting station in the route sequence
 - Journey distance and time are calculated based on boarding and alighting stations
 - External travel data enables competitive analysis
+
