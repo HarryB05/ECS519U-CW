@@ -1,0 +1,66 @@
+For the DB design scenario (a group has selected), develop a DB design.
+Each group submits ONE pdf file (max 7 pages) structured as follows:
+
+0) Page 1: Title page:
+	- Scenario chosen
+	- group information (student names, ids and emails)
+
+1) Page 2: Requirement analysis:
+	- Background: a short report about the scenario
+		you are designing the DB for;
+		includes knowledge about
+		NHS hospitals and waiting lists, or
+			suspicious activities (reports), etc
+
+	- Assumptions: 3 to 6 assumptions that inform your DB design;
+		assumptions shall be relevant;
+		e.g.~a student registers for exactly one course is relevant;
+		"a student has a name" are not relevant.
+		Other relevant assumptions:
+		"A booking involves a customer, a receptionist, and several rooms booked; should be modelled as a relationship; but we model booking as an entity, and use relationships such as customer_makes_booking."
+
+2) Page 3: ER Model:
+	A textual description of the entity-relationship model.
+	- Description of the entities and relationships
+	- Explanations for cardinality and participation constraints
+
+3) Page 4: ER Diagram:
+	A graphical description of your ER model.
+	Use a tool (not restricted to the list on the QMPlus page)
+	to provide a graphical description of your textual description.
+
+	Your graphical diagram must correspond to the textual description.
+
+4) Page 5 and 6: Mapping steps and Logical Model:
+	The mapping of the conceptual model to the logical model.
+	Explain the main mapping steps.
+	Show the logical model (tables);
+	remember to explain some of the steps; do not show only the tables.
+
+5) Page 7: Normalisation:
+	Explain if and why your schema is in 3NF.
+	Even if your schema is already in 3NF,
+	construct an example for 2NF and 3NF
+	to demonstrate where in your design
+	a normalisation step occurred
+	(excluding the normalisation of address, post-code -> city).
+
+
+
+Feedback:
+	Each group will receive feedback for
+	1. ReqAnalysis and Assumptions
+	2. ER Model: Textual
+	3. ER Diagram
+	4. Mapping Steps
+	5. Logical Model (Tables)
+	6. Normalisation
+
+For each of the steps, the feedback will include a flag:
+	excellent (85-100)
+	very good (70-85)
+	good (55-70)
+	satisfactory (40-55)
+	not satisfactory (<40)
+
+The feedback for CW-2 is formative, and it prepares the students for CW-3.

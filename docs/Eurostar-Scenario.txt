@@ -1,0 +1,63 @@
+=== DB Design Scenario: Eurostar 2030
+
+You are a DB (and AI, and ML, and BI) consultant and
+your customer is the Eurostar company.
+The Eurostar company operates trains, and it services (repairs)
+the railway lines between London, Paris, Brussels and Cologne.
+There are numerous challenges for the next decade, and Eurostar
+has decided to invest into a new DB solution.
+
+A particular requirement is to relate Eurostar travelling
+to other travel routes (e.g. planes, ferries).
+Eurostar wants to run queries such as
+"what percent of customers travel by Eurostar".
+This requires data from the travel industry in general.
+
+Regarding its own operation,
+there are several routes to be considered.
+For example, London St Pancras to Paris , and
+new routes planned (e.g. London Stratford to Paris, and London Stratford to Cologne; not operating yet).
+Some of the new routes will become operational soon, others will
+remain in planning status.
+Some trains will terminate in Brussels, with a connection
+to Paris or Cologne.
+Others trains stop in Brussels, and then continue to Cologne in Germany.
+The direct tains are more convenient for travellers, and therefore,
+Eurostar charges a higher price for direct trains than for
+connecting trains.
+
+The DB design has to be ready to model train routes
+with different stations to start from, and different stations to terminate at.
+The routes have one start station, several stations in the middle
+(referred to as stops), and one terminal station.
+
+For each route, distance and journey time are to be stored.
+For example, the 306-mile route London-Paris takes 2hrs 50 mins.
+
+The company operates 20 trains. On average, 16 are in operation,
+and the others are not operating, i.e. are
+in a regular service check or require a repair.
+
+Trains can serve different routes.
+Only the modern trains (introduced in 2016)
+will be suitable for the new Stratford-Cologne route (because of track issues).
+The DB solution shall make sure that none of the old trains can be assigned
+to run on a new route.
+
+The company employs around 400 people in many different roles.
+There are the train crews operating the trains.
+A crew consists of two drivers, two conductors
+(one is the head of the crew),
+five service team members
+(responsible for drinks and food), and two security guards.
+Other employees are responsible for management, sales or train repairs.
+
+You will need to demonstrate that your DB application can
+keep track of each train trip and the employees involved in the trip.
+The company wants to process queries such as
+"Show all train journeys where Mary Poppins was part of the train team".
+
+Also, information about number and type of passengers are to be stored
+for each trip.  Then, queries such as
+"how many students travelled from St Pancras to Paris in Dec 2020"
+can be processed.

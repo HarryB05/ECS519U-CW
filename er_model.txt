@@ -1,0 +1,188 @@
+ER MODEL DESCRIPTION - EUROSTAR DATABASE
+
+ENTITIES AND THEIR ATTRIBUTES:
+
+1. STATIONS
+   - Primary Key: station_id
+   - Attributes: station_name, city, country
+   - Description: Represents all railway stations including existing and planned future stations
+
+2. ROUTES
+   - Primary Key: route_id
+   - Attributes: route_name, status, total_distance_miles, scheduled_journey_time_minutes
+   - Foreign Keys: start_station_id (FK to Stations), terminal_station_id (FK to Stations)
+   - Description: Defines abstract paths between start and end stations
+
+3. ROUTE_STOPS
+   - Primary Key: Composite (route_id, station_id)
+   - Attributes: stop_sequence, stop_type, distance_from_start_miles, leg_journey_time_minutes, platform_number
+   - Foreign Keys: route_id (FK to Routes), station_id (FK to Stations)
+   - Description: Models intermediate stops and their order on routes
+
+4. TRAIN_MODELS
+   - Primary Key: model_id
+   - Attributes: model_name, introduction_year, can_serve_new_routes
+   - Description: Categorizes trains by model and capabilities
+
+5. TRAINS
+   - Primary Key: train_id
+   - Attributes: name, status
+   - Foreign Keys: model_id (FK to Train_Models)
+   - Description: Represents each physical train
+
+6. EMPLOYEES
+   - Primary Key: employee_id
+   - Attributes: first_name, last_name, other_details
+   - Description: Master list of all employees
+
+7. ROLES
+   - Primary Key: role_id
+   - Attributes: role_name
+   - Description: Defines job roles (Driver, Conductor, etc.)
+
+8. CREW_ASSIGNMENTS
+   - Primary Key: Composite (employee_id, role_id)
+   - Foreign Keys: employee_id (FK to Employees), role_id (FK to Roles)
+   - Description: Links employees to roles for crew team composition
+
+9. TRIPS
+   - Primary Key: trip_id
+   - Attributes: trip_type, departure_datetime, arrival_datetime, is_direct, status, parent_trip_id
+   - Foreign Keys: route_id (FK to Routes), train_id (FK to Trains)
+   - Description: Combined table for scheduled and actual trip data
+
+10. PASSENGER_TYPES
+    - Primary Key: passenger_type_id
+    - Attributes: type_name
+    - Description: Lookup table for passenger categories
+
+11. TRIP_CREW_ASSIGNMENTS
+    - Primary Key: Composite (trip_id, employee_id)
+    - Attributes: assignment_status
+    - Foreign Keys: trip_id (FK to Trips), employee_id (FK to Employees), role_id (FK to Roles)
+    - Description: Links trips to crew members
+
+12. TRIP_PASSENGERS
+    - Primary Key: Composite (trip_id, passenger_type_id)
+    - Attributes: passenger_count, booking_reference
+    - Foreign Keys: trip_id (FK to Trips), passenger_type_id (FK to Passenger_Types)
+    - Description: Tracks passenger counts by type for each trip
+
+13. EXTERNAL_TRAVEL_PROVIDERS
+    - Primary Key: provider_id
+    - Attributes: provider_name, provider_type, country_of_origin
+    - Description: Stores information about other travel providers
+
+14. EXTERNAL_TRAVEL_ROUTES
+    - Primary Key: external_route_id
+    - Attributes: origin_city, destination_city, route_type, average_journey_time_hours, typical_frequency_per_day
+    - Foreign Keys: provider_id (FK to External_Travel_Providers)
+    - Description: Defines routes offered by external providers
+
+15. CUSTOMERS
+    - Primary Key: customer_id
+    - Attributes: first_name, last_name, email, phone_number, date_of_birth, customer_type
+    - Description: Master list of all customers
+
+16. CUSTOMER_TRIPS
+    - Primary Key: customer_trip_id
+    - Attributes: booking_reference, ticket_class, booking_date, cancellation_status, journey_distance_miles, journey_time_minutes
+    - Foreign Keys: customer_id (FK to Customers), trip_id (FK to Trips), boarding_station_id (FK to Stations), alighting_station_id (FK to Stations)
+    - Description: Links customers to their Eurostar trips with specific boarding and alighting stations
+
+RELATIONSHIPS AND CARDINALITY CONSTRAINTS:
+
+1. STATIONS (1) ←→ (M) ROUTES
+   - One station can be the start/terminal of many routes
+   - Each route has exactly one start station and one terminal station
+   - Participation: Total participation for Routes (every route must have start and terminal stations)
+
+2. ROUTES (1) ←→ (M) ROUTE_STOPS
+   - One route can have many stops
+   - Each stop belongs to exactly one route
+   - Participation: Total participation for Route_Stops (every stop must belong to a route)
+
+3. STATIONS (1) ←→ (M) ROUTE_STOPS
+   - One station can be a stop on many routes
+   - Each stop involves exactly one station
+   - Participation: Total participation for Route_Stops
+
+4. TRAIN_MODELS (1) ←→ (M) TRAINS
+   - One train model can have many trains
+   - Each train belongs to exactly one model
+   - Participation: Total participation for Trains
+
+5. TRAINS (1) ←→ (M) TRIPS
+   - One train can make many trips
+   - Each trip uses exactly one train
+   - Participation: Total participation for Trips
+
+6. ROUTES (1) ←→ (M) TRIPS
+   - One route can have many trips
+   - Each trip follows exactly one route
+   - Participation: Total participation for Trips
+
+7. EMPLOYEES (M) ←→ (M) ROLES (via CREW_ASSIGNMENTS)
+   - Many-to-many relationship between employees and roles
+   - Participation: Partial participation (not all employees may be assigned roles)
+
+8. TRIPS (1) ←→ (M) TRIP_CREW_ASSIGNMENTS
+   - One trip can have many crew assignments
+   - Each crew assignment belongs to exactly one trip
+   - Participation: Total participation for Trip_Crew_Assignments
+
+9. EMPLOYEES (1) ←→ (M) TRIP_CREW_ASSIGNMENTS
+   - One employee can be assigned to many trips
+   - Each crew assignment involves exactly one employee
+   - Participation: Partial participation for Employees
+
+10. ROLES (1) ←→ (M) TRIP_CREW_ASSIGNMENTS
+    - One role can be assigned to many trips
+    - Each crew assignment involves exactly one role
+    - Participation: Total participation for Trip_Crew_Assignments
+
+11. TRIPS (1) ←→ (M) TRIP_PASSENGERS
+    - One trip can have many passenger type records
+    - Each passenger record belongs to exactly one trip
+    - Participation: Total participation for Trip_Passengers
+
+12. PASSENGER_TYPES (1) ←→ (M) TRIP_PASSENGERS
+    - One passenger type can appear in many trips
+    - Each passenger record involves exactly one passenger type
+    - Participation: Total participation for Trip_Passengers
+
+13. EXTERNAL_TRAVEL_PROVIDERS (1) ←→ (M) EXTERNAL_TRAVEL_ROUTES
+    - One provider can offer many routes
+    - Each external route belongs to exactly one provider
+    - Participation: Total participation for External_Travel_Routes
+
+14. CUSTOMERS (1) ←→ (M) CUSTOMER_TRIPS
+    - One customer can make many trips
+    - Each customer trip belongs to exactly one customer
+    - Participation: Total participation for Customer_Trips
+
+15. TRIPS (1) ←→ (M) CUSTOMER_TRIPS
+    - One trip can have many customer bookings
+    - Each customer trip involves exactly one trip
+    - Participation: Partial participation for Trips (not all trips may have customer bookings)
+
+16. STATIONS (1) ←→ (M) CUSTOMER_TRIPS (boarding_station_id)
+    - One station can be the boarding point for many customer trips
+    - Each customer trip has exactly one boarding station
+    - Participation: Total participation for Customer_Trips
+
+17. STATIONS (1) ←→ (M) CUSTOMER_TRIPS (alighting_station_id)
+    - One station can be the alighting point for many customer trips
+    - Each customer trip has exactly one alighting station
+    - Participation: Total participation for Customer_Trips
+
+BUSINESS RULES ENFORCED BY CARDINALITY:
+
+- Every route must have a start and terminal station (enforced by foreign key constraints)
+- Every trip must use exactly one train and follow exactly one route
+- Crew assignments ensure proper staffing for each trip
+- Passenger tracking enables demographic analysis
+- Customer-trip relationships support customer journey analysis with specific boarding and alighting points
+- Boarding station must come before alighting station in the route sequence
+- Journey distance and time are calculated based on boarding and alighting stations
+- External travel data enables competitive analysis

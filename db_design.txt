@@ -1,0 +1,144 @@
+Stations
+* Stores all stations, including existing and planned future ones.
+* station_id (PK)
+* station_name (e.g., 'London St Pancras', 'London Stratford', 'Paris Nord', 'Brussels-Midi')
+* city (e.g., 'London', 'Paris', 'Brussels')
+* country
+
+
+Routes
+* Defines the abstract path between a start and end station.
+* route_id (PK)
+* route_name (e.g., 'Classic London-Paris', 'New Stratford-Cologne')
+* start_station_id (FK to Stations)
+* terminal_station_id (FK to Stations)
+* status (e.g., 'Active', 'Planned', 'Under Construction') - Crucial for new routes.
+* total_distance_miles
+* scheduled_journey_time_minutes (Storing time in minutes is better for calculations)
+
+
+Route_Stops
+* Models the intermediate stops and the order they occur on a route. This allows for flexible routing (e.g., trains that stop in Brussels and continue to Cologne).
+* route_id (FK to Routes)
+* station_id (FK to Stations)
+* stop_sequence (Integer: 0 = start, 1,2,3... = intermediate, -1 = terminal)
+* stop_type (e.g., 'Start', 'Intermediate', 'Terminal', 'Connection', 'Optional')
+* distance_from_start_miles (Cumulative distance)
+* leg_journey_time_minutes (Time from previous stop)
+* platform_number (Optional - specific platform at station)
+
+
+Train_Models
+* Categorizes trains by model and capabilities.
+* model_id (PK)
+* model_name (e.g., 'Class 374', 'Eurostar e320', 'Avant Garde 2030')
+* introduction_year
+* can_serve_new_routes (Boolean flag - Enforces that only modern trains can be assigned to new routes like Stratford-Cologne)
+
+
+Trains
+* Represents each physical train.
+* train_id (PK)
+* model_id (FK to Train_Models)
+* name (e.g., 'Train 001')
+* status (e.g., 'Active', 'Maintenance', 'Repair') - Tracks the ~4 trains not in operation.
+
+
+Employees
+* Master list of all employees.
+* employee_id (PK)
+* first_name
+* last_name
+* other_details (e.g., contact info)
+
+
+Roles
+* Defines the job roles.
+* role_id (PK)
+* role_name (e.g., 'Driver', 'Conductor', 'Head Conductor', 'Service Team', 'Security Guard', 'Manager', 'Engineer')
+
+
+Crew_Assignments
+* Links employees to a crew team and specifies their role in that team. This ensures the business rule of "two drivers, one head conductor, etc." can be enforced at the application level when building a team.
+* employee_id (FK to Employees)
+* role_id (FK to Roles)
+
+
+Trips
+* Combined table for both scheduled and actual trip data, reducing redundancy while maintaining all required functionality.
+* trip_id (PK)
+* trip_type (e.g., 'Scheduled', 'Actual') - Distinguishes between planned and executed trips
+* route_id (FK to Routes)
+* train_id (FK to Trains) - A trigger/application logic will check Train_Models.can_serve_new_routes against the Routes.status here.
+* departure_datetime - Stores either scheduled or actual departure time based on trip_type
+* arrival_datetime - Stores either scheduled or actual arrival time based on trip_type
+* is_direct (Boolean) - Essential for pricing. Direct trains are more convenient and expensive.
+* status (e.g., 'Completed', 'Cancelled', 'Delayed', 'Scheduled') - Trip status, 'Scheduled' for planned trips
+* parent_trip_id (FK to Trips.trip_id) - For actual trips, references the corresponding scheduled trip (NULL for scheduled trips)
+
+
+Passenger_Types
+* A lookup table for passenger categories.
+* passenger_type_id (PK)
+* type_name (e.g., 'Adult', 'Child', 'Student', 'Senior')
+
+
+Trip_Crew_Assignments
+* Links trips to crew members, enabling queries like "Show all train journeys where Mary Poppins was part of the train team".
+* trip_id (FK to Trips)
+* employee_id (FK to Employees)
+* role_id (FK to Roles)
+* assignment_status (e.g., 'Assigned', 'Completed', 'Cancelled', 'No-Show')
+
+
+Trip_Passengers
+* Tracks passenger counts by type for each trip, enabling queries like "how many students travelled from St Pancras to Paris in Dec 2020".
+* trip_id (FK to Trips)
+* passenger_type_id (FK to Passenger_Types)
+* passenger_count (Integer)
+* booking_reference (Optional - for individual bookings)
+
+
+External_Travel_Providers
+* Stores information about other travel providers (airlines, ferries, buses) for comparative analysis.
+* provider_id (PK)
+* provider_name (e.g., 'British Airways', 'P&O Ferries', 'National Express')
+* provider_type (e.g., 'Airline', 'Ferry', 'Bus', 'Coach')
+* country_of_origin
+
+
+External_Travel_Routes
+* Defines routes offered by external providers for comparison with Eurostar routes.
+* external_route_id (PK)
+* provider_id (FK to External_Travel_Providers)
+* origin_city
+* destination_city
+* route_type (e.g., 'Air', 'Sea', 'Road')
+* average_journey_time_hours
+* typical_frequency_per_day
+
+
+Customers
+* Master list of all customers who have traveled with Eurostar.
+* customer_id (PK)
+* first_name
+* last_name
+* email
+* phone_number
+* date_of_birth
+* customer_type (e.g., 'Individual', 'Corporate', 'Group')
+
+
+Customer_Trips
+* Links customers to their Eurostar trips for customer journey analysis.
+* customer_trip_id (PK)
+* customer_id (FK to Customers)
+* trip_id (FK to Trips)
+* boarding_station_id (FK to Stations) - Where customer gets on the train
+* alighting_station_id (FK to Stations) - Where customer gets off the train
+* booking_reference
+* ticket_class (e.g., 'Standard', 'Standard Premier', 'Business Premier')
+* booking_date
+* cancellation_status (e.g., 'Active', 'Cancelled', 'Refunded')
+* journey_distance_miles (Calculated field: distance from boarding to alighting station)
+* journey_time_minutes (Calculated field: time from boarding to alighting station)
