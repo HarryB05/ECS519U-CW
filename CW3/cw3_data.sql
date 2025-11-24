@@ -1,8 +1,3 @@
--- Sample Data for Eurostar Database
--- Insert data in dependency order to respect foreign key constraints
-
-USE ecs519;
-
 -- Insert Stations
 INSERT INTO Station (station_id, station_name, city, country) VALUES
 (1, 'London St Pancras International', 'London', 'United Kingdom'),

@@ -1,6 +1,3 @@
--- Eurostar Database Schema
--- Created based on ER Model and Logical Model
-
 -- Create database
 DROP DATABASE IF EXISTS ecs519;
 CREATE DATABASE ecs519;
