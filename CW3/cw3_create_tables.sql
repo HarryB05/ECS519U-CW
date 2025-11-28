@@ -7,7 +7,9 @@ USE ecs519;
 DROP TABLE IF EXISTS TripPassenger;
 DROP TABLE IF EXISTS TripCrew;
 DROP TABLE IF EXISTS Trip;
+DROP TABLE IF EXISTS Passenger;
 DROP TABLE IF EXISTS Employee;
+DROP TABLE IF EXISTS Person;
 DROP TABLE IF EXISTS RouteTrainEligibility;
 DROP TABLE IF EXISTS RouteStation;
 DROP TABLE IF EXISTS Route;
@@ -68,13 +70,33 @@ CREATE TABLE RouteTrainEligibility (
     FOREIGN KEY (train_id) REFERENCES Train(train_id)
 );
 
--- Create Employee table
+-- Create Person table (Supertype for Generalisation)
+CREATE TABLE Person (
+    person_id INT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    date_of_birth DATE,
+    email VARCHAR(255),
+    phone VARCHAR(50)
+);
+
+-- Create Employee table (Subtype of Person)
 CREATE TABLE Employee (
     employee_id INT PRIMARY KEY,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
+    person_id INT NOT NULL,
     role_id INT,
+    hire_date DATE,
+    FOREIGN KEY (person_id) REFERENCES Person(person_id),
     FOREIGN KEY (role_id) REFERENCES Role(role_id)
+);
+
+-- Create Passenger table (Subtype of Person)
+CREATE TABLE Passenger (
+    passenger_id INT PRIMARY KEY,
+    person_id INT NOT NULL,
+    loyalty_member BOOLEAN DEFAULT FALSE,
+    membership_tier VARCHAR(50),
+    FOREIGN KEY (person_id) REFERENCES Person(person_id)
 );
 
 -- Create Trip table

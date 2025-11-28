@@ -108,51 +108,64 @@ INSERT INTO RouteTrainEligibility (route_id, train_id) VALUES
 (8, 102),
 (8, 103);
 
--- Insert Persons (Supertype for Generalisation)
-INSERT INTO Person (person_id, first_name, last_name, date_of_birth, nationality) VALUES
-(1, 'James', 'Mitchell', '1985-03-15', 'British'),
-(2, 'Sarah', 'Thompson', '1990-07-22', 'British'),
-(3, 'Pierre', 'Dubois', '1988-11-08', 'French'),
-(4, 'Emma', 'Williams', '1992-05-14', 'British'),
-(5, 'Luc', 'Martin', '1987-09-30', 'French'),
-(6, 'Sophie', 'Bernard', '1991-12-05', 'French'),
-(7, 'David', 'Brown', '1986-01-20', 'British'),
-(8, 'Marie', 'Lefebvre', '1989-04-18', 'French'),
-(9, 'Thomas', 'Anderson', '1984-08-12', 'British'),
-(10, 'Claire', 'Petit', '1993-06-25', 'French'),
-(11, 'Michael', 'Johnson', '1987-02-10', 'British'),
-(12, 'Isabelle', 'Moreau', '1990-10-03', 'French'),
-(13, 'Robert', 'Taylor', '1985-12-28', 'British'),
-(14, 'Camille', 'Garcia', '1992-03-17', 'French'),
-(15, 'Jean', 'Dupont', '1986-07-09', 'French'),
-(16, 'Alice', 'Smith', '1991-11-21', 'British'),
-(17, 'Marc', 'Leroy', '1988-05-04', 'Belgian'),
-(18, 'Laura', 'Jones', '1994-09-15', 'British'),
-(19, 'Paul', 'Van Der Berg', '1987-01-30', 'Dutch'),
-(20, 'Olivia', 'Wilson', '1990-08-22', 'British');
+-- Insert Persons (Supertype)
+INSERT INTO Person (person_id, first_name, last_name, date_of_birth, email, phone) VALUES
+(1, 'James', 'Mitchell', '1985-03-15', 'james.mitchell@eurostar.com', '+44 20 7928 0001'),
+(2, 'Sarah', 'Thompson', '1987-07-22', 'sarah.thompson@eurostar.com', '+44 20 7928 0002'),
+(3, 'Michael', 'Chen', '1989-11-08', 'michael.chen@eurostar.com', '+44 20 7928 0003'),
+(4, 'Emma', 'Wilson', '1990-02-14', 'emma.wilson@eurostar.com', '+44 20 7928 0004'),
+(5, 'David', 'Brown', '1991-05-30', 'david.brown@eurostar.com', '+44 20 7928 0005'),
+(6, 'Sophie', 'Martinez', '1992-09-17', 'sophie.martinez@eurostar.com', '+44 20 7928 0006'),
+(7, 'Robert', 'Taylor', '1986-01-25', 'robert.taylor@eurostar.com', '+44 20 7928 0007'),
+(8, 'Laura', 'Anderson', '1988-04-12', 'laura.anderson@eurostar.com', '+44 20 7928 0008'),
+(9, 'Christopher', 'White', '1984-08-03', 'christopher.white@eurostar.com', '+44 20 7928 0009'),
+(10, 'Jennifer', 'Harris', '1987-12-19', 'jennifer.harris@eurostar.com', '+44 20 7928 0010'),
+(11, 'Daniel', 'Clark', '1993-06-07', 'daniel.clark@eurostar.com', '+44 20 7928 0011'),
+(12, 'Amanda', 'Lewis', '1985-10-23', 'amanda.lewis@eurostar.com', '+44 20 7928 0012'),
+(13, 'Thomas', 'Walker', '1986-02-28', 'thomas.walker@eurostar.com', '+44 20 7928 0013'),
+(14, 'Rachel', 'Hall', '1994-07-11', 'rachel.hall@eurostar.com', '+44 20 7928 0014'),
+(15, 'William', 'Young', '1989-03-26', 'william.young@eurostar.com', '+44 20 7928 0015'),
+(16, 'Nicole', 'King', '1990-09-02', 'nicole.king@eurostar.com', '+44 20 7928 0016'),
+(17, 'Matthew', 'Wright', '1988-01-18', 'matthew.wright@eurostar.com', '+44 20 7928 0017'),
+(18, 'Jessica', 'Lopez', '1991-05-04', 'jessica.lopez@eurostar.com', '+44 20 7928 0018'),
+(19, 'Andrew', 'Hill', '1992-11-20', 'andrew.hill@eurostar.com', '+44 20 7928 0019'),
+(20, 'Olivia', 'Scott', '1993-08-15', 'olivia.scott@eurostar.com', '+44 20 7928 0020'),
+(21, 'Benjamin', 'Green', '1995-04-09', 'benjamin.green@example.com', '+44 20 1234 0001'),
+(22, 'Charlotte', 'Adams', '1992-10-16', 'charlotte.adams@example.com', '+44 20 1234 0002'),
+(23, 'Henry', 'Baker', '1988-06-22', 'henry.baker@example.com', '+44 20 1234 0003'),
+(24, 'Isabella', 'Nelson', '1994-12-03', 'isabella.nelson@example.com', '+44 20 1234 0004'),
+(25, 'Alexander', 'Carter', '1991-08-19', 'alexander.carter@example.com', '+44 20 1234 0005');
 
--- Insert Employees (Subtype of Person - Generalisation)
-INSERT INTO Employee (employee_id, role_id, hire_date) VALUES
-(1, 1, '2013-06-01'),
-(2, 1, '2014-03-15'),
-(3, 1, '2015-09-10'),
-(4, 2, '2016-01-20'),
-(5, 2, '2016-05-12'),
-(6, 2, '2017-02-08'),
-(7, 3, '2014-11-30'),
-(8, 3, '2015-07-18'),
-(9, 4, '2013-04-05'),
-(10, 4, '2017-10-22'),
-(11, 2, '2018-03-14'),
-(12, 5, '2015-12-01'),
-(13, 1, '2014-08-25'),
-(14, 2, '2018-06-10'),
-(15, 6, '2019-01-15'),
-(16, 7, '2018-09-05'),
-(17, 8, '2017-11-20'),
-(18, 9, '2019-02-28'),
-(19, 10, '2018-04-12'),
-(20, 2, '2020-07-08');
+-- Insert Employees (Subtype of Person)
+INSERT INTO Employee (employee_id, person_id, role_id, hire_date) VALUES
+(1, 1, 1, '2013-06-01'),
+(2, 2, 1, '2014-03-15'),
+(3, 3, 1, '2015-09-10'),
+(4, 4, 2, '2016-01-20'),
+(5, 5, 2, '2016-05-12'),
+(6, 6, 2, '2017-02-08'),
+(7, 7, 3, '2014-11-30'),
+(8, 8, 3, '2015-07-18'),
+(9, 9, 4, '2013-04-05'),
+(10, 10, 4, '2017-10-22'),
+(11, 11, 2, '2018-03-14'),
+(12, 12, 5, '2015-12-01'),
+(13, 13, 1, '2014-08-25'),
+(14, 14, 2, '2018-06-10'),
+(15, 15, 6, '2019-01-15'),
+(16, 16, 7, '2018-09-05'),
+(17, 17, 8, '2017-11-20'),
+(18, 18, 9, '2019-02-28'),
+(19, 19, 10, '2018-04-12'),
+(20, 20, 2, '2020-07-08');
+
+-- Insert Passengers (Subtype of Person)
+INSERT INTO Passenger (passenger_id, person_id, loyalty_member, membership_tier) VALUES
+(1, 21, TRUE, 'Gold'),
+(2, 22, TRUE, 'Silver'),
+(3, 23, FALSE, NULL),
+(4, 24, TRUE, 'Bronze'),
+(5, 25, FALSE, NULL);
 
 -- Insert Trips
 INSERT INTO Trip (trip_id, route_id, train_id, departure_datetime, arrival_datetime) VALUES

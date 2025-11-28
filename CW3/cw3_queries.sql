@@ -20,15 +20,17 @@ ORDER BY t.departure_datetime;
 -- Query 2: Find employees with their role names and the number of trips they have been assigned to
 SELECT 
     e.employee_id,
-    e.first_name,
-    e.last_name,
+    p.first_name,
+    p.last_name,
+    p.email,
     r.role_name,
     COUNT(tc.trip_id) AS number_of_trips_assigned
 FROM Employee e
+JOIN Person p ON e.person_id = p.person_id
 JOIN Role r ON e.role_id = r.role_id
 LEFT JOIN TripCrew tc ON e.employee_id = tc.employee_id
-GROUP BY e.employee_id, e.first_name, e.last_name, r.role_name
-ORDER BY number_of_trips_assigned DESC, e.last_name;
+GROUP BY e.employee_id, p.first_name, p.last_name, p.email, r.role_name
+ORDER BY number_of_trips_assigned DESC, p.last_name;
 
 -- Part 2: Medium Queries
 
@@ -81,6 +83,28 @@ LEFT JOIN Station s1 ON r.start_station_id = s1.station_id
 LEFT JOIN Station s2 ON r.end_station_id = s2.station_id
 ORDER BY t.train_id, r.route_id;
 
+-- Query 4: Demonstrate Person generalisation - Show all persons with their subtype information
+SELECT 
+    p.person_id,
+    p.first_name,
+    p.last_name,
+    p.email,
+    p.phone,
+    CASE 
+        WHEN e.employee_id IS NOT NULL THEN 'Employee'
+        WHEN pass.passenger_id IS NOT NULL THEN 'Passenger'
+        ELSE 'Neither'
+    END AS person_type,
+    r.role_name AS employee_role,
+    e.hire_date,
+    pass.loyalty_member,
+    pass.membership_tier
+FROM Person p
+LEFT JOIN Employee e ON p.person_id = e.person_id
+LEFT JOIN Role r ON e.role_id = r.role_id
+LEFT JOIN Passenger pass ON p.person_id = pass.person_id
+ORDER BY p.last_name, p.first_name;
+
 -- Part 3: Advanced Queries
 
 -- Query 1: Find trips that have more total passengers than the average number of passengers per trip
@@ -112,8 +136,9 @@ ORDER BY total_passengers.total_passenger_count DESC;
 -- Query 2: Find employees who have worked on trips for at least 50% of the routes that train 101 is eligible for
 SELECT 
     e.employee_id,
-    e.first_name,
-    e.last_name,
+    p.first_name,
+    p.last_name,
+    p.email,
     r.role_name,
     COUNT(DISTINCT t.route_id) AS routes_worked_on,
     (SELECT COUNT(DISTINCT rte2.route_id) 
@@ -124,6 +149,7 @@ SELECT
            FROM RouteTrainEligibility rte3 
            WHERE rte3.train_id = 101), 2) AS percentage_coverage
 FROM Employee e
+JOIN Person p ON e.person_id = p.person_id
 JOIN Role r ON e.role_id = r.role_id
 JOIN TripCrew tc ON e.employee_id = tc.employee_id
 JOIN Trip t ON tc.trip_id = t.trip_id
@@ -133,12 +159,12 @@ WHERE t.route_id IN (
     FROM RouteTrainEligibility rte
     WHERE rte.train_id = 101
 )
-GROUP BY e.employee_id, e.first_name, e.last_name, r.role_name
+GROUP BY e.employee_id, p.first_name, p.last_name, p.email, r.role_name
 HAVING COUNT(DISTINCT t.route_id) * 100.0 / 
        (SELECT COUNT(DISTINCT rte4.route_id) 
         FROM RouteTrainEligibility rte4 
         WHERE rte4.train_id = 101) >= 50
-ORDER BY percentage_coverage DESC, e.last_name;
+ORDER BY percentage_coverage DESC, p.last_name;
 
 -- Query 3: Find routes where more than 90% of trips use trains introduced in 2018 or later
 SELECT 
@@ -156,3 +182,39 @@ JOIN Train tr ON t.train_id = tr.train_id
 GROUP BY r.route_id, s1.station_name, s2.station_name
 HAVING COUNT(CASE WHEN tr.year_introduced >= 2018 THEN 1 END) * 100.0 / COUNT(t.trip_id) > 90
 ORDER BY percentage_recent_trains DESC;
+
+-- Query 4: Find employees (using Person generalisation) and show if they are also passengers
+SELECT 
+    p.person_id,
+    p.first_name,
+    p.last_name,
+    p.email,
+    r.role_name AS employee_role,
+    e.hire_date,
+    CASE 
+        WHEN pass.passenger_id IS NOT NULL THEN 'Yes'
+        ELSE 'No'
+    END AS is_also_passenger,
+    pass.loyalty_member,
+    pass.membership_tier AS passenger_tier,
+    COUNT(DISTINCT tc.trip_id) AS trips_as_employee,
+    (SELECT COUNT(*) 
+     FROM Employee e2 
+     WHERE e2.role_id = e.role_id) AS total_employees_in_role
+FROM Person p
+INNER JOIN Employee e ON p.person_id = e.person_id
+LEFT JOIN Passenger pass ON p.person_id = pass.person_id
+LEFT JOIN Role r ON e.role_id = r.role_id
+LEFT JOIN TripCrew tc ON e.employee_id = tc.employee_id
+GROUP BY p.person_id, p.first_name, p.last_name, p.email, r.role_name, e.hire_date, 
+         pass.passenger_id, pass.loyalty_member, pass.membership_tier, e.role_id
+HAVING COUNT(DISTINCT tc.trip_id) > (
+    SELECT AVG(trip_count)
+    FROM (
+        SELECT COUNT(DISTINCT tc2.trip_id) AS trip_count
+        FROM Employee e3
+        LEFT JOIN TripCrew tc2 ON e3.employee_id = tc2.employee_id
+        GROUP BY e3.employee_id
+    ) AS avg_trips
+)
+ORDER BY trips_as_employee DESC, p.last_name, p.first_name;
