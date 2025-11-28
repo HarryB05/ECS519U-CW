@@ -1,3 +1,6 @@
+-- Run in MySQL!!!!!!
+
+
 -- Create database
 DROP DATABASE IF EXISTS ecs519;
 CREATE DATABASE ecs519;
